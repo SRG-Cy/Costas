@@ -101,6 +101,8 @@ def clean_answers(raw: dict) -> dict:
         out["room_type"] = raw["room_type"]
     if raw.get("dwelling") in ("house", "apartment"):
         out["dwelling"] = raw["dwelling"]
+    if raw.get("persona") in ("student", "professional"):
+        out["persona"] = raw["persona"]
     for k in ("ensuite", "include_gym", "needs_irp"):
         if isinstance(raw.get(k), bool):
             out[k] = raw[k]
@@ -121,6 +123,7 @@ housing: "room" (shared house) or "own_place"
 bedrooms (own_place only): one of {costs.BEDROOM_OPTIONS}
 room_type: "single" or "double"; dwelling: "house" or "apartment"; ensuite: true/false
 include_gym: true/false
+persona: "student" (studying) or "professional" (working)
 needs_irp: true only if they are from outside the EU, EEA, UK and Switzerland and staying over 90 days
 Omit any key you cannot infer.
 

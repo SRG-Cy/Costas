@@ -54,7 +54,7 @@ def test_city_option_ignored_for_county_without_city():
 
 def test_estimate_total_is_housing_plus_essentials():
     e = costs.estimate(Choices(county="Galway", housing="room", in_city=True, room_type="double", dwelling="house"))
-    assert e.housing == 700 and e.essentials == pytest.approx(MESL) and e.total == pytest.approx(700 + MESL)
+    assert e.housing == 700 and e.essentials == pytest.approx(476.49) and e.total == pytest.approx(700 + 476.49)
 
 
 def test_gym_is_added_only_when_selected_and_flagged_low_confidence():
@@ -127,3 +127,41 @@ def test_explain_rejects_invented_numbers(monkeypatch):
     ok = f"Rent is €{round(est.housing):,} and the total is €{round(est.total):,} a month."
     monkeypatch.setattr(ai, "_complete", lambda *a, **k: ok)
     assert ai.explain(est, "Galway") == ok
+
+
+def test_mesl_breakdown_sums_to_essentials_and_matches_2024_shares():
+    split = dict(costs.mesl_breakdown())
+    assert abs(sum(split.values()) - costs.catalogue_item("mesl_single_urban")["monthly_eur_low"]) < 0.5
+    # official 2024 table: food 59.87 of 269.90 total
+    assert abs(split["Food"] / sum(split.values()) - 59.87 / 269.90) < 0.001
+    assert len(split) == 14
+
+
+def test_persona_changes_everyday_costs_as_given_by_the_author():
+    student = costs.essentials_basket("student", own_place=False)
+    pro = costs.essentials_basket("professional", own_place=False)
+    d = lambda rows: {k: v for k, v, _ in rows}
+    assert d(student)["Groceries"] == 100 and d(pro)["Groceries"] == 150
+    assert d(student)["Transport"] == 45 and d(pro)["Transport"] == 100
+    assert round(sum(d(student).values()), 2) == 476.49
+
+
+def test_whole_home_uses_sourced_electricity_and_adds_broadband_but_no_gas():
+    own = {k: v for k, v, _ in costs.essentials_basket("student", own_place=True)}
+    shared = {k: v for k, v, _ in costs.essentials_basket("student", own_place=False)}
+    assert own["Electricity"] == pytest.approx(float(costs.catalogue_item("electricity_small_home")["monthly_eur_low"]))
+    assert shared["Electricity"] == 50
+    assert own["Broadband"] == 40 and "Broadband" not in shared
+    assert not any("gas" in k.lower() or "heating" in k.lower() for k in own)
+
+
+def test_professional_health_insurance_uses_mesl_share():
+    mesl = dict(costs.mesl_breakdown())
+    pro = {k: v for k, v, _ in costs.essentials_basket("professional", own_place=False)}
+    assert pro["Health insurance"] == pytest.approx(mesl["Insurance"], abs=0.01)
+
+
+def test_estimate_total_still_housing_plus_essentials_and_keeps_mesl_for_comparison():
+    e = costs.estimate(Choices(county="Dublin", housing="room", persona="professional"))
+    assert e.total == pytest.approx(e.housing + e.essentials)
+    assert e.mesl_reference == pytest.approx(MESL)

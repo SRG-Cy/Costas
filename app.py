@@ -45,6 +45,16 @@ def eur(x: float) -> str:
     return f"€{x:,.0f}"
 
 
+def half_year_to_date(s: str):
+    """'2008H1' -> 1 Jan 2008, '2008H2' -> 1 Jul 2008, so charts show years, not codes."""
+    return pd.Timestamp(year=int(s[:4]), month=1 if s.endswith("H1") else 7, day=1)
+
+
+def period_words(s: str) -> str:
+    """'2025H2' -> 'the second half of 2025'."""
+    return f"the {'first' if s.endswith('H1') else 'second'} half of {s[:4]}"
+
+
 @st.cache_data
 def counties():
     return costs.counties()
@@ -52,9 +62,9 @@ def counties():
 
 
 
-STEPS = ["Welcome", "Where", "Home", "Extras", "Result"]
+STEPS = ["Welcome", "Where", "Home", "About you", "Result"]
 DEFAULTS = {"county": "Dublin", "in_city": False, "housing": "room", "bedrooms": "One bed",
-            "room_type": "single", "dwelling": "house", "ensuite": False, "include_gym": False, "needs_irp": False}
+            "room_type": "single", "dwelling": "house", "ensuite": False, "include_gym": False, "needs_irp": False, "persona": "student"}
 
 if "step" not in st.session_state:
     st.session_state.step = 0
@@ -76,17 +86,17 @@ def nav(back: int | None, next_: int | None, next_label: str = "Next"):
 
 
 step = st.session_state.step
-if step > 0:
+if 0 < step < len(STEPS):
     st.progress(step / (len(STEPS) - 1), text=f"Step {step} of {len(STEPS) - 1}: {STEPS[step]}")
 
 if step == 0:
     st.markdown(
-        '<div class="hero"><span class="pill">Hacktoberfest 2026 · Ireland</span>'
+        '<div class="hero">'
         '<h1>Moving to Ireland?<br><span class="accent">Know the cost first.</span></h1>'
         '<p>Answer three quick questions. Get a monthly estimate and the cash you need on arrival, '
-        'built from official data. Every number shows its source and date.</p>'
-        '<div class="sample"><div class="k">Example · room in Galway City</div>'
-        '<div class="big">about €2,000 a month</div>'
+        'built from official data. Every number comes with its source.</p>'
+        '<div class="sample"><div class="k">Example · a student in a room in Galway City</div>'
+        '<div class="big">about €1,200 a month</div>'
         '<div class="k">plus one-off move-in cash. Yours depends on your answers.</div></div></div>',
         unsafe_allow_html=True)
     st.button("Start", type="primary", on_click=go, args=(1,))
@@ -101,8 +111,8 @@ if step == 0:
                 found = ai.parse_situation(text)
             if found:
                 A.update(found)
-                st.session_state.prefilled = True
-                go(1)
+                st.session_state.ai_filled = set(found)
+                go(5)
                 st.rerun()
             else:
                 st.warning("I couldn't read that. Try again, or press Start and answer the questions.")
@@ -111,8 +121,6 @@ if step == 0:
 
 elif step == 1:
     st.header("Where will you live?")
-    if st.session_state.pop("prefilled", False):
-        st.success("I filled this in from your description. Check each step and change anything that's wrong.")
     cs = counties()
     A["county"] = st.selectbox("County", cs, index=cs.index(A["county"]))
     city = costs.city_option(A["county"])
@@ -127,25 +135,69 @@ elif step == 1:
 
 elif step == 2:
     st.header("What kind of home?")
-    labels = ["A room in a shared house", "My own place (flat or house)"]
-    pick = st.radio("Housing", labels, index=0 if A["housing"] == "room" else 1)
-    A["housing"] = "room" if pick == labels[0] else "own_place"
-    if A["housing"] == "own_place":
-        A["bedrooms"] = st.selectbox("Bedrooms", BEDROOM_OPTIONS, index=BEDROOM_OPTIONS.index(A["bedrooms"]))
-    else:
-        c1, c2, c3 = st.columns(3)
-        A["room_type"] = c1.radio("Room", ["single", "double"], index=["single", "double"].index(A["room_type"]))
-        A["dwelling"] = c2.radio("In a", ["house", "apartment"], index=["house", "apartment"].index(A["dwelling"]))
-        A["ensuite"] = c3.radio("Ensuite?", ["No", "Yes"], index=1 if A["ensuite"] else 0) == "Yes"
+    kinds = ["room", "own_place"]
+    A["housing"] = st.radio("What are you looking for?", kinds, horizontal=True,
+                            index=kinds.index(A["housing"]),
+                            format_func=lambda k: "A room in a shared house" if k == "room" else "My own place (flat or house)")
+    with st.container(border=True):
+        if A["housing"] == "own_place":
+            A["bedrooms"] = st.radio("How many bedrooms?", BEDROOM_OPTIONS, horizontal=True,
+                                     index=BEDROOM_OPTIONS.index(A["bedrooms"]))
+        else:
+            rt = ["single", "double"]
+            A["room_type"] = st.radio("Type of room", rt, horizontal=True, index=rt.index(A["room_type"]),
+                                      format_func=str.capitalize)
+            dw = ["house", "apartment"]
+            A["dwelling"] = st.radio("Type of home", dw, horizontal=True, index=dw.index(A["dwelling"]),
+                                     format_func=str.capitalize)
+            A["ensuite"] = st.radio("Bathroom", [False, True], horizontal=True, index=1 if A["ensuite"] else 0,
+                                    format_func=lambda b: "Own ensuite" if b else "Shared bathroom")
     nav(1, 3)
 
 elif step == 3:
-    st.header("Anything extra?")
-    A["include_gym"] = st.checkbox("Gym membership (rough estimate, no source yet)", value=A["include_gym"])
+    st.header("A little about you")
+    personas = ["student", "professional"]
+    A["persona"] = st.radio("Are you coming to study or to work?", personas, horizontal=True,
+                            index=personas.index(A["persona"]),
+                            format_func=lambda p: "To study (student)" if p == "student" else "To work (professional)")
+    st.caption("This changes everyday costs such as food, going out, transport and health insurance.")
+    A["include_gym"] = st.checkbox("Add a gym membership (rough estimate, no source yet)", value=A["include_gym"])
     A["needs_irp"] = st.checkbox(
         "I am from outside the EU, EEA, UK and Switzerland and will stay more than 90 days (IRP registration, €300)",
         value=A["needs_irp"])
     nav(2, 4, "See my estimate")
+
+elif step == 5:
+    st.header("Is this right?")
+    st.write("Here is what I understood from your description. Check it, then confirm. "
+             "Anything I couldn't tell from your text is marked *assumed*.")
+    filled = st.session_state.get("ai_filled", set())
+
+    def val(key: str, text: str) -> str:
+        return text if key in filled else f"{text} (assumed)"
+
+    cty = A["county"]
+    cc = costs.city_option(cty)
+    place_txt = (f"{cc}, Co. {cty}" if A["in_city"] and cc else (f"Elsewhere in Co. {cty}" if cc else f"Co. {cty}"))
+    rows = [("Where", val("county", place_txt))]
+    if A["housing"] == "room":
+        rows.append(("Looking for", val("housing", "A room in a shared house")))
+        rows.append(("Room", val("room_type", A["room_type"].capitalize())))
+        rows.append(("Home", val("dwelling", A["dwelling"].capitalize())))
+        rows.append(("Bathroom", val("ensuite", "Own ensuite" if A["ensuite"] else "Shared bathroom")))
+    else:
+        rows.append(("Looking for", val("housing", "My own place (flat or house)")))
+        rows.append(("Bedrooms", val("bedrooms", A["bedrooms"])))
+    rows.append(("Coming to", val("persona", "Study (student)" if A["persona"] == "student" else "Work (professional)")))
+    rows.append(("Gym membership", val("include_gym", "Yes" if A["include_gym"] else "No")))
+    rows.append(("Needs IRP registration (non-EU)", val("needs_irp", "Yes" if A["needs_irp"] else "No")))
+    st.markdown('<div class="cards" style="grid-template-columns:1fr;">' + "".join(
+        f'<div class="card" style="display:flex;justify-content:space-between;gap:1rem;padding:.8rem 1.2rem;">'
+        f'<span class="k">{k}</span><span style="font-weight:600;text-align:right;">{v}</span></div>'
+        for k, v in rows) + '</div>', unsafe_allow_html=True)
+    cols = st.columns([2, 2, 2])
+    cols[0].button("Confirm and see my estimate", type="primary", on_click=go, args=(4,), key="confirm")
+    cols[1].button("Change something", on_click=go, args=(1,), key="change")
 
 else:
     county, in_city, housing = A["county"], A["in_city"], A["housing"]
@@ -153,7 +205,7 @@ else:
     city = costs.city_option(county)
     est = costs.estimate(Choices(county=county, housing=housing, in_city=in_city, bedrooms=bedrooms,
                                  room_type=room_type, dwelling=dwelling, ensuite=ensuite,
-                                 include_gym=A["include_gym"], needs_irp=A["needs_irp"]))
+                                 include_gym=A["include_gym"], needs_irp=A["needs_irp"], persona=A["persona"]))
     st.header("Your estimate")
     place = city if (in_city and city) else county
     st.caption(f"{place} · {est.housing_label}")
@@ -172,6 +224,7 @@ else:
             f"One-off cash = deposit {eur(est.deposit)} + first month's rent {eur(est.housing)}{extra}. "
             "The RTB caps a standard private-rental deposit and advance rent at one month's rent each. "
             "Student accommodation can differ.")
+    st.markdown("[Sources](#sources)")
     st.caption("An estimate, not advice. One-off costs cover deposit, first month and (if selected) IRP only. Visa and permit fees, and setup items, are not included yet.")
     for n in est.notes:
         st.info(n)
@@ -190,15 +243,12 @@ else:
                     if ai.LAST_ERROR:
                         st.caption(f"Technical detail: {ai.LAST_ERROR}")
 
-    tab_break, tab_time, tab_compare, tab_sources = st.tabs(["Breakdown", "Rent over time", "Compare places", "Sources and limits"])
+    tab_break, tab_time, tab_compare = st.tabs(["Breakdown", "Rent over time", "Compare places"])
 
     with tab_break:
-        df = pd.DataFrame([{"Item": l.label, "Per month": eur(l.amount), "Source": l.source,
-                            "As of": l.as_of, "Confidence": l.confidence} for l in est.lines])
+        df = pd.DataFrame([{"Item": l.label, "Per month": eur(l.amount), "How reliable": l.confidence}
+                           for l in est.lines])
         st.dataframe(df, hide_index=True, width="stretch")
-        chart = pd.DataFrame({"€ per month": [l.amount for l in est.lines]},
-                             index=[l.label.split(":")[0].split(" (")[0] for l in est.lines])
-        st.bar_chart(chart)
 
     with tab_time:
         area_bed = bedrooms if housing == "own_place" else "One bed"
@@ -208,43 +258,71 @@ else:
             hist = costs.rent_history(county, area_bed)
             area = county
         if housing == "room":
-            st.caption("Room-rent history is not loaded yet (one quarter only). For context, here is the "
-                       "rent for a whole one-bed home in the same area.")
+            st.caption("We only have one set of room prices, so here is how the rent for a whole "
+                       "one-bed home in the same area has changed.")
         if hist:
-            st.line_chart(pd.DataFrame(hist, columns=["Half-year", "€ per month"]).set_index("Half-year"))
-            st.caption(f"Average monthly rent, {area_bed.lower()}, {area}. Source: RTB Rent Index via CSO (RIH02).")
+            frame = pd.DataFrame({"Year": [half_year_to_date(h) for h, _ in hist],
+                                  "€ per month": [v for _, v in hist]}).set_index("Year")
+            st.line_chart(frame)
+            first, last = hist[0][0][:4], hist[-1][0][:4]
+            st.caption(f"Average monthly rent for a {area_bed.lower()} home in {area}, {first} to {last}.")
 
     with tab_compare:
         if housing == "own_place":
             data = costs.own_place_by_county(bedrooms)
-            st.caption(f"Average monthly rent for a {bedrooms.lower()} home, by county, {costs.latest_period()}.")
+            st.caption(f"Average monthly rent for a {bedrooms.lower()} home, by county, in {period_words(costs.latest_period())}.")
             st.bar_chart(pd.DataFrame(data, columns=["County", "€ per month"]).set_index("County"))
         else:
             data = costs.rooms_by_market(room_type, dwelling, ensuite)
-            st.caption(f"Average listed rent for a {room_type} room in a {dwelling}"
-                       f"{' with' if ensuite else ', no'} ensuite, by market, 2026Q1 (Daft.ie).")
+            st.caption(f"Average advertised rent for a {room_type} room in a {dwelling}"
+                       f"{' with an ensuite' if ensuite else ' with a shared bathroom'}, by area, early 2026.")
             st.bar_chart(pd.DataFrame(data, columns=["Market", "€ per month"]).set_index("Market"))
-            st.caption("Markets with too few listings are left out.")
+            st.caption("Areas with too few adverts are left out.")
 
-    with tab_sources:
-        st.markdown("**What this estimate is**")
-        st.markdown(
-            "- **Housing:** whole homes use the RTB Rent Index (registered tenancies, half-yearly, latest 2025H2). "
-            "Rooms use Daft.ie *listed* (asking) rents from the Q1 2026 rental report.\n"
-            "- **Everyday essentials:** the Vincentian MESL budget for a single working-age adult in an urban "
-            "area, excluding housing (MESL 2025). It is a national figure, so it does not vary by county, "
-            "and it is for someone already settled in Ireland.\n"
-            "- **Not included yet:** visa and permit fees, setup items (SIM, bedding), health "
-            "insurance, childcare, and anything for couples or families.")
-        st.markdown("**Sourced items in the catalogue (for reference, already inside the essentials figure)**")
-        cat = pd.DataFrame([{"Item": c["label"], "Low": c["monthly_eur_low"], "High": c["monthly_eur_high"],
-                             "Status": c["status"], "Source": c["source_name"], "As of": c["as_of"],
-                             "Link": c["source_url"]} for c in costs.catalogue() if c["status"] in ("verified", "estimate")])
-        st.dataframe(cat, hide_index=True, width="stretch",
-                     column_config={"Link": st.column_config.LinkColumn("Link")})
-        st.caption("Items marked *estimate* have no source yet.")
+    with st.expander("What is inside everyday essentials?"):
+        who = "a student" if A["persona"] == "student" else "a working professional"
+        st.write(f"Typical monthly costs for {who}, by category:")
+        basket = pd.DataFrame([{"What": k, "Per month": eur(v), "Note": n} for k, v, n in est.essentials_detail]
+                              + [{"What": "Total", "Per month": eur(est.essentials), "Note": ""}])
+        st.dataframe(basket, hide_index=True, width="stretch")
+        st.caption("These are estimated typical costs, not official statistics. Prices vary around the country, "
+                   "and your own habits will move these figures up or down. A whole home uses the average electricity "
+                   "bill for a small home and adds broadband; gas and heating are not included yet. Where no figure "
+                   "was available (a professional's health insurance) the official minimum-budget share is used.")
+        st.markdown(f"**For comparison:** the official minimum budget for a settled adult (MESL) is about "
+                    f"{eur(est.mesl_reference)} a month excluding housing. It assumes a permanent household, "
+                    "so it runs higher than a typical student budget.")
+        st.markdown("**How the official minimum budget splits**")
+        st.dataframe(pd.DataFrame([{"What": k, "Per month (about)": eur(v)} for k, v in costs.mesl_breakdown()]),
+                     hide_index=True, width="stretch")
+        st.caption("The 2025 report gives only the total. This applies the shares of the official 2024 budget "
+                   "for a single adult in a city to the 2025 total.")
 
+    # ---------------------------------------------------------------- sources (the "Sources" link jumps here)
     st.divider()
-    st.caption("Built for Hacktoberfest 2026. Data: CSO/RTB, Daft.ie, Vincentian MESL Research Centre, GoMo, Selectra. "
-               "Figures change: always check the linked sources.")
+    st.subheader("Sources", anchor="sources")
+    cat = {c["item_id"]: c for c in costs.catalogue()}
+    room_url = costs.room_source_url()
+    st.markdown(
+        "- **Rent for a whole home:** RTB Rent Index, published by the CSO "
+        f"([table RIH02](https://data.cso.ie/table/RIH02)), latest {period_words(costs.latest_period())}.\n"
+        f"- **Rent for a room:** Daft.ie Rental Report, first quarter 2026 ([report]({room_url})). "
+        "These are advertised (asking) rents.\n"
+        "- **Everyday essentials:** estimated typical monthly costs for a student or a working professional "
+        "(not an official statistic), with one gap filled from the official MESL budget. "
+        f"[Vincentian MESL 2025]({cat['mesl_single_urban']['source_url']}) is shown for comparison.\n"
+        "- **Official minimum budget, split by category (comparison only):** [MESL 2024 budget, single adult, city]"
+        "(https://budgeting.ie/wp-content/uploads/2024/08/WA_Core_MESL_U_2024.pdf), shares applied to the 2025 total.\n"
+        f"- **Deposit and first month:** [RTB rules]({cat['arrival_deposit']['source_url']}): at most one month's rent each.\n"
+        + (f"- **IRP registration fee (€300):** [DkIT]({cat['arrival_registration']['source_url']}). A university page, so check the official fee before you rely on it.\n" if est.irp else "")
+        + "- **Not included yet:** visa and permit fees, setup items (SIM, bedding), health insurance, "
+        "childcare, and anything for couples or families.")
+    ref = [c for c in cat.values() if c["status"] == "verified" and c["source_url"]
+           and c["item_id"] not in ("mesl_single_urban", "arrival_deposit")]
+    if ref:
+        with st.expander("Other prices we checked (for reference)"):
+            for c in ref:
+                st.markdown(f"- [{c['label']}]({c['source_url']}) ({c['source_name']})")
+
+    st.caption("Figures change. Always check the linked sources.")
     st.button("Start over", on_click=lambda: (st.session_state.update(step=0, answers=dict(DEFAULTS))))

@@ -128,6 +128,47 @@ def own_place_by_county(bedrooms: str) -> list[tuple[str, float]]:
               AND rent_eur <> '' ORDER BY 2""", [bedrooms])]
 
 
+def essentials_basket(persona: str, own_place: bool) -> list[tuple[str, float, str]]:
+    """Everyday costs by category for a student or a working professional.
+
+    Figures are the author's own experience of living in Galway for three years. Where no figure was given
+    (professional health insurance) the official MESL share is used. A whole home uses a sourced electricity
+    average, and adds broadband. Gas and heating are not included yet.
+    """
+    col = "student_eur" if persona == "student" else "professional_eur"
+    mesl = dict(mesl_breakdown())
+    out = []
+    for cat, val, own_only, own_item, mesl_cat, note in _rows(
+            f"""SELECT category, TRY_CAST({col} AS DOUBLE), own_place_only, own_place_catalogue_item,
+                       mesl_category, note FROM {_csv('essentials_basket.csv')}"""):
+        if own_only == "yes" and not own_place:
+            continue
+        if own_place and own_item:
+            val = float(catalogue_item(own_item)["monthly_eur_low"])
+        elif val is None:
+            val = mesl[mesl_cat]
+        out.append((cat, round(val, 2), note))
+    return out
+
+
+def mesl_breakdown() -> list[tuple[str, float]]:
+    """Split of the 2025 MESL essentials figure by category.
+
+    MESL 2025 publishes the total (EUR 287 a week) but not the category split for a single adult, so we apply
+    the shares from the published 2024 budget to the 2025 total. Shares, not 2024 prices: the result sums to the
+    figure the app uses for everyday essentials.
+    """
+    rows = _rows(f"SELECT category, TRY_CAST(weekly_eur_2024 AS DOUBLE) FROM {_csv('mesl_breakdown.csv')}")
+    total_2024 = sum(r[1] for r in rows)
+    monthly = catalogue_item("mesl_single_urban")["monthly_eur_low"]
+    return [(r[0], round(r[1] / total_2024 * monthly, 2)) for r in rows]
+
+
+def room_source_url() -> str:
+    rows = _rows(f"SELECT source_url FROM {_csv('rooms.csv')} LIMIT 1")
+    return rows[0][0] if rows else ""
+
+
 def rooms_by_market(room_type: str, dwelling: str, ensuite: bool) -> list[tuple[str, float]]:
     return [(r[0], r[1]) for r in _rows(
         f"""SELECT market, TRY_CAST(avg_listed_rent_eur AS DOUBLE) FROM {_csv('rooms.csv')}
@@ -146,6 +187,7 @@ class Choices:
     dwelling: str = "house"          # room only: house / apartment
     ensuite: bool = False            # room only
     include_gym: bool = False
+    persona: str = "student"          # "student" or "professional" (working)
     needs_irp: bool = False          # non-EU/EEA/UK/Swiss: must register for an Irish Residence Permit
 
 
@@ -163,6 +205,8 @@ class Estimate:
     lines: list[Line] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
     housing_label: str = ""
+    essentials_detail: list = field(default_factory=list)   # (category, monthly, note)
+    mesl_reference: float = 0.0      # official minimum budget, shown for comparison only
     irp: float = 0.0                 # one-off IRP registration fee (0 if not needed)
 
     @property
@@ -215,11 +259,16 @@ def estimate(c: Choices) -> Estimate:
             if r["note"]:
                 est.notes.append(r["note"])
 
-    base = catalogue_item("mesl_single_urban")
+    basket = essentials_basket(c.persona, c.housing == "own_place")
+    est.essentials_detail = basket
+    if c.housing == "own_place":
+        est.notes.append("Gas and heating for a whole home are not included yet.")
+    est.mesl_reference = catalogue_item("mesl_single_urban")["monthly_eur_low"]
+    label = "student" if c.persona == "student" else "working professional"
     est.lines.append(Line(
-        "Everyday essentials (food, energy, transport, phone and more)",
-        base["monthly_eur_low"], f"{base['source_name']} (single adult, urban, excluding housing)",
-        base["as_of"], base["confidence"]))
+        f"Everyday essentials ({label} budget)",
+        round(sum(v for _, v, _ in basket), 2),
+        "Estimated typical costs; official MESL share fills the one gap", "2026", "low"))
 
     if c.needs_irp:
         irp = catalogue_item("arrival_registration")
@@ -231,6 +280,6 @@ def estimate(c: Choices) -> Estimate:
         g = catalogue_item("gym_optional")
         if g and g["monthly_eur_low"] is not None:
             mid = round((g["monthly_eur_low"] + g["monthly_eur_high"]) / 2, 2)
-            est.lines.append(Line("Optional: gym membership", mid, "Author's rough estimate", g["as_of"], "low"))
+            est.lines.append(Line("Optional: gym membership", mid, "Rough estimate", g["as_of"], "low"))
             est.notes.append("The gym figure is a rough estimate with no source yet.")
     return est

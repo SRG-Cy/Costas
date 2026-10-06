@@ -1,0 +1,12 @@
+category,student_eur,professional_eur,own_place_only,own_place_catalogue_item,mesl_category,note
+Groceries,100,150,,,,Student about 100 a month; working professional about 150.
+Social life and activities,100,150,,,,Student about 100; working professional about 150.
+Transport,45,100,,,,Student with a Leap card 40 to 50; working professional up to 100 if running a car.
+Electricity,50,50,,electricity_small_home,,About 50 in a shared house. For a whole flat or house the average small-home electricity bill is used (Selectra). Gas and heating are not included yet.
+Broadband,40,40,yes,,,Whole home only: about 40 a month (range 30 to 45). Assumed to be part of the shared bills in a shared house.
+Phone,13.99,13.99,,,,Phone plans cost 12.99 to 14.99; midpoint used.
+Health insurance,22.5,,,,Insurance,Student cover about 270 for the year. For professionals the official MESL insurance share is used; cover can cost more.
+Clothing,50,100,,,,"Varies by person, 50 to 100. Student at the low end; professional at the high end."
+Personal care,50,50,,,,Estimate.
+Health (GP and pharmacy),25,25,,,,Estimate.
+Household services,20,20,,,,Estimate.

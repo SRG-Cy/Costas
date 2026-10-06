@@ -25,3 +25,21 @@ Short notes on why the project is built the way it is. Each one is a talking poi
 - Deposit and arrival costs, public transport fares, health insurance: need sourced figures.
 - Roll rents forward with CPI (RTB data ends 2025H2); use the newer Daft Q2 2026 report.
 - Urban vs rural MESL split.
+
+
+## Everyday costs: student vs working professional (2026-10-06)
+
+**Decision:** the essentials figure is now a basket built from the author's three years of living in Galway,
+split by student or working professional. The official MESL budget (about 1,244 a month, a settled adult) is kept
+only for comparison.
+
+**Why:** MESL describes a permanent household. A newcomer student spends far less (about 476 a month against 1,244).
+Showing 1,244 to every newcomer would overstate the cost for the main audience.
+
+**Gaps:** a professional's health insurance uses the MESL insurance share (no figure was given). A whole home uses
+Selectra's small-home electricity average and adds broadband at 40 (author: 30 to 45). Gas and heating are
+excluded for now (no figure yet).
+
+**Known weaknesses:** the basket is one person's experience in one city (confidence: low), not an official statistic.
+Professional transport of 100 assumes a car. Broadband is assumed to be part of shared bills in a shared house.
+Gas and heating are not in the basket.
