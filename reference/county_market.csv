@@ -1,0 +1,27 @@
+county,province,room_market,city_room_market,notes
+Carlow,Leinster,Leinster (ex-Dublin),,
+Cavan,Ulster,Connacht-Ulster (ex-Galway),,
+Clare,Munster,Munster (ex-Cities),,
+Cork,Munster,Munster (ex-Cities),Cork City,Rest of county uses the Munster (ex-Cities) region figures
+Donegal,Ulster,Connacht-Ulster (ex-Galway),,
+Dublin,Leinster,Dublin,,
+Galway,Connacht,Connacht-Ulster (ex-Galway),Galway City,Rest of county mapped to Connacht-Ulster (ex-Galway): assumption - the report label says ex-Galway
+Kerry,Munster,Munster (ex-Cities),,
+Kildare,Leinster,Leinster (ex-Dublin),,
+Kilkenny,Leinster,Leinster (ex-Dublin),,
+Laois,Leinster,Leinster (ex-Dublin),,
+Leitrim,Connacht,Connacht-Ulster (ex-Galway),,
+Limerick,Munster,Munster (ex-Cities),Limerick City,Rest of county uses the Munster (ex-Cities) region figures
+Longford,Leinster,Leinster (ex-Dublin),,
+Louth,Leinster,Leinster (ex-Dublin),,
+Mayo,Connacht,Connacht-Ulster (ex-Galway),,
+Meath,Leinster,Leinster (ex-Dublin),,
+Monaghan,Ulster,Connacht-Ulster (ex-Galway),,
+Offaly,Leinster,Leinster (ex-Dublin),,
+Roscommon,Connacht,Connacht-Ulster (ex-Galway),,
+Sligo,Connacht,Connacht-Ulster (ex-Galway),,
+Tipperary,Munster,Munster (ex-Cities),,
+Waterford,Munster,Munster (ex-Cities),Waterford City,Rest of county uses the Munster (ex-Cities) region figures
+Westmeath,Leinster,Leinster (ex-Dublin),,
+Wexford,Leinster,Leinster (ex-Dublin),,
+Wicklow,Leinster,Leinster (ex-Dublin),,

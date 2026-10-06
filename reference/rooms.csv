@@ -1,0 +1,73 @@
+market,market_type,room_type,dwelling,ensuite,avg_listed_rent_eur,yoy_change_pct,quarter,source_name,source_page,source_url
+Dublin,region,double,house,yes,1027,3.7,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Other Cities,region,double,house,yes,842,7.5,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Leinster (ex-Dublin),region,double,house,yes,785,6.1,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Munster (ex-Cities),region,double,house,yes,709,3.2,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Connacht-Ulster (ex-Galway),region,double,house,yes,637,3.1,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Dublin,region,double,house,no,891,5.2,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Other Cities,region,double,house,no,717,5.2,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Leinster (ex-Dublin),region,double,house,no,693,5.5,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Munster (ex-Cities),region,double,house,no,644,6.5,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Connacht-Ulster (ex-Galway),region,double,house,no,580,4.9,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Dublin,region,double,apartment,yes,1138,1.5,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Other Cities,region,double,apartment,yes,949,10.8,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Leinster (ex-Dublin),region,double,apartment,yes,799,0.5,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Munster (ex-Cities),region,double,apartment,yes,745,3.5,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Connacht-Ulster (ex-Galway),region,double,apartment,yes,737,22.6,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Dublin,region,double,apartment,no,1031,6.1,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Other Cities,region,double,apartment,no,748,1.7,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Leinster (ex-Dublin),region,double,apartment,no,722,0.9,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Munster (ex-Cities),region,double,apartment,no,674,7.9,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Connacht-Ulster (ex-Galway),region,double,apartment,no,579,-2.2,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Dublin,region,single,house,yes,940,6.2,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Other Cities,region,single,house,yes,858,18.0,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Leinster (ex-Dublin),region,single,house,yes,736,8.2,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Munster (ex-Cities),region,single,house,yes,646,0.1,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Connacht-Ulster (ex-Galway),region,single,house,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Dublin,region,single,house,no,770,5.0,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Other Cities,region,single,house,no,650,8.3,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Leinster (ex-Dublin),region,single,house,no,622,6.2,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Munster (ex-Cities),region,single,house,no,576,3.6,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Connacht-Ulster (ex-Galway),region,single,house,no,527,4.0,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Dublin,region,single,apartment,yes,1082,0.3,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Other Cities,region,single,apartment,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Leinster (ex-Dublin),region,single,apartment,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Munster (ex-Cities),region,single,apartment,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Connacht-Ulster (ex-Galway),region,single,apartment,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Dublin,region,single,apartment,no,902,3.0,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Other Cities,region,single,apartment,no,661,10.5,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Leinster (ex-Dublin),region,single,apartment,no,656,0.5,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Munster (ex-Cities),region,single,apartment,no,,,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Connacht-Ulster (ex-Galway),region,single,apartment,no,,,2026Q1,Daft.ie Rental Report 2026Q1,15,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Cork City,city,double,house,yes,852,2.0,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Galway City,city,double,house,yes,806,8.3,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Limerick City,city,double,house,yes,873,14.5,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Waterford City,city,double,house,yes,785,18.5,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Cork City,city,double,house,no,746,4.3,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Galway City,city,double,house,no,700,4.9,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Limerick City,city,double,house,no,692,5.8,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Waterford City,city,double,house,no,636,4.5,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Cork City,city,double,apartment,yes,940,5.7,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Galway City,city,double,apartment,yes,883,3.1,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Limerick City,city,double,apartment,yes,1026,25.7,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Waterford City,city,double,apartment,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Cork City,city,double,apartment,no,823,10.8,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Galway City,city,double,apartment,no,753,4.4,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Limerick City,city,double,apartment,no,662,-11.1,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Waterford City,city,double,apartment,no,781,19.9,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Cork City,city,single,house,yes,883,13.3,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Galway City,city,single,house,yes,800,16.2,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Limerick City,city,single,house,yes,966,45.4,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Waterford City,city,single,house,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Cork City,city,single,house,no,686,10.5,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Galway City,city,single,house,no,659,11.9,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Limerick City,city,single,house,no,610,2.0,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Waterford City,city,single,house,no,546,4.7,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Cork City,city,single,apartment,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Galway City,city,single,apartment,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Limerick City,city,single,apartment,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Waterford City,city,single,apartment,yes,,,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Cork City,city,single,apartment,no,666,7.8,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Galway City,city,single,apartment,no,683,4.4,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Limerick City,city,single,apartment,no,689,21.5,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf
+Waterford City,city,single,apartment,no,491,-6.5,2026Q1,Daft.ie Rental Report 2026Q1,32,https://www.rte.ie/documents/news/2026/05/daft.ie-rental-report-2026q1.pdf

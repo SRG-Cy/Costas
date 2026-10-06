@@ -1,0 +1,23 @@
+# Virtual environment
+.venv/
+
+# Downloaded data (large, and re-creatable by the scripts)
+data/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Secrets (API keys)
+.env
+
+# Editor and OS files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# DuckDB database files
+*.duckdb
+*.duckdb.wal
+.streamlit/secrets.toml
+.pytest_cache/
