@@ -4,6 +4,8 @@
 Answer a few questions, one per page, and get a monthly estimate plus the one-off cash you need on arrival.
 Every number links to its source.
 
+**Live app: https://costas.streamlit.app/**
+
 Built solo for Hacktoberfest 2026.
 
 ## What it does
