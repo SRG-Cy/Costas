@@ -165,3 +165,48 @@ def test_estimate_total_still_housing_plus_essentials_and_keeps_mesl_for_compari
     e = costs.estimate(Choices(county="Dublin", housing="room", persona="professional"))
     assert e.total == pytest.approx(e.housing + e.essentials)
     assert e.mesl_reference == pytest.approx(MESL)
+
+
+@pytest.mark.parametrize("text, expected", [
+    ("€1,135 a month", {1135}),          # English
+    ("1.135 € im Monat", {1135}),        # German: dot for thousands, sign after
+    ("1 135 € par mois", {1135}),        # French: space for thousands
+    ("1 135 € par mois", {1135}),   # French: narrow no-break space
+    ("€1.135,50", {1136}),               # European decimals
+    ("about 5000 euro", {5000}),         # no euro sign at all
+    ("in 3 short sentences", set()),     # small numbers are not figures
+])
+def test_figures_reads_numbers_in_every_offered_language_style(text, expected):
+    assert ai._figures(text) == expected
+
+
+@pytest.mark.parametrize("invented", ["Sie zahlen 9.999 € pro Monat.", "Coûte 9 999 € par mois.",
+                                      "You will pay 9999 euro a month.", "Total: EUR 9,999."])
+def test_explain_rejects_invented_numbers_in_any_format(monkeypatch, invented):
+    est = costs.estimate(Choices(county="Galway", housing="room"))
+    monkeypatch.setattr(ai, "available", lambda: True)
+    monkeypatch.setattr(ai, "_complete", lambda *a, **k: invented)
+    assert ai.explain(est, "Galway", "German") is None
+
+
+def test_explain_accepts_true_figures_in_european_format(monkeypatch):
+    est = costs.estimate(Choices(county="Galway", housing="room", in_city=True))
+    total = f"{round(est.total):,}".replace(",", ".")
+    ok = f"Insgesamt zahlen Sie etwa {total} € pro Monat."
+    monkeypatch.setattr(ai, "available", lambda: True)
+    monkeypatch.setattr(ai, "_complete", lambda *a, **k: ok)
+    assert ai.explain(est, "Galway City", "German") == ok
+
+
+def test_explain_uses_the_irp_fee_from_the_catalogue(monkeypatch):
+    est = costs.estimate(Choices(county="Galway", housing="room", needs_irp=True))
+    est.irp = 450.0  # a changed fee must flow through to the prompt and the allowed figures
+    prompts = []
+
+    def fake(prompt, **k):
+        prompts.append(prompt)
+        return "The IRP fee is €450."
+    monkeypatch.setattr(ai, "available", lambda: True)
+    monkeypatch.setattr(ai, "_complete", fake)
+    assert ai.explain(est, "Galway") == "The IRP fee is €450."
+    assert '"irp_registration_fee": 450' in prompts[0] and "300" not in prompts[0]

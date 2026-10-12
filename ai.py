@@ -136,11 +136,35 @@ User description:
         return {}
 
 
-_EURO = re.compile(r"€\s?([\d,]+(?:\.\d+)?)")
+# Any number, in English (1,135.50) or European (1.135,50 / 1 135,50) style, with or without a currency sign.
+_GROUPED = re.compile(r"\d{1,3}(?:([,.\u00a0\u202f ])\d{3})(?:\1\d{3})*(?:[.,]\d{1,2})?(?!\d)")
+_PLAIN = re.compile(r"\d+(?:[.,]\d{1,2})?(?!\d)")
+
+
+def _to_number(token: str) -> float:
+    """'1,135' / '1.135' / '1 135' -> 1135; '22.50' / '22,50' -> 22.5."""
+    whole, dec = token, ""
+    m = re.search(r"[.,](\d{1,2})$", token)
+    if m:
+        whole, dec = token[:m.start()], m.group(1)
+    whole = re.sub(r"\D", "", whole)
+    return float(f"{whole}.{dec}" if dec else whole)
 
 
 def _figures(s: str) -> set[int]:
-    return {round(float(m.replace(",", ""))) for m in _EURO.findall(s)}
+    """Every number of 10 or more in the text, whatever the currency sign, position or separator style.
+
+    Small numbers (1 to 9) are left out so that phrases like "3 short sentences" do not count as figures.
+    """
+    out, i = set(), 0
+    while (start := re.search(r"\d", s[i:])) is not None:
+        i += start.start()
+        m = _GROUPED.match(s, i) or _PLAIN.match(s, i)
+        n = round(_to_number(m.group(0)))
+        if n >= 10:
+            out.add(n)
+        i = m.end()
+    return out
 
 
 def explain(est, place: str, language: str = "English") -> str | None:
@@ -154,9 +178,11 @@ def explain(est, place: str, language: str = "English") -> str | None:
         "total_per_month": round(est.total),
         "one_off_arrival_cash": round(est.arrival_total),
         "one_off_includes": "deposit (one month's rent) + first month's rent"
-                            + (" + 300 IRP registration fee" if est.irp else ""),
+                            + (" + IRP registration fee" if est.irp else ""),
     }
-    allowed = {v for v in facts.values() if isinstance(v, int)} | ({300} if est.irp else set())
+    if est.irp:
+        facts["irp_registration_fee"] = round(est.irp)
+    allowed = {v for v in facts.values() if isinstance(v, int)}
     prompt = f"""Explain this Irish cost-of-living estimate to a newcomer in 3 or 4 short sentences, in {language}.
 Use ONLY these facts and write money as €<number> exactly as given. Do not add, round, convert or invent any
 other figure, and do not give advice about visas or legal matters. Plain text, no lists.
