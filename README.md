@@ -88,6 +88,8 @@ python explore.py            # downloads the RTB/CSO rent table to data/raw/ (ab
 python export_reference.py   # writes reference/rent_area.csv
 ```
 
+The app reads each reference file once and keeps the results in memory, so restart it after refreshing the data.
+
 ## Files
 
 | File | Purpose |

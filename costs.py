@@ -11,6 +11,7 @@ tested. All numbers come from the CSV files in reference/ - nothing is invented.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from functools import lru_cache
 from pathlib import Path
 
 import duckdb
@@ -19,12 +20,24 @@ REF = Path(__file__).resolve().parent / "reference"
 BEDROOM_OPTIONS = ["One bed", "Two bed", "Three bed", "Four plus bed"]
 
 
-def _rows(sql: str, params: list | None = None) -> list[tuple]:
+def _rows(sql: str, params: list | None = None) -> tuple[tuple, ...]:
+    return _cached_rows(sql, tuple(params or ()))
+
+
+@lru_cache(maxsize=None)
+def _cached_rows(sql: str, params: tuple) -> tuple[tuple, ...]:
+    """Run a query once and keep the result. The reference CSVs do not change while the app runs,
+    so every lookup after the first is free. Results are tuples so callers cannot alter the cache."""
     con = duckdb.connect()
     try:
-        return con.execute(sql, params or []).fetchall()
+        return tuple(con.execute(sql, list(params)).fetchall())
     finally:
         con.close()
+
+
+def clear_cache() -> None:
+    """Forget cached query results (for tests, or after editing a reference CSV in a running session)."""
+    _cached_rows.cache_clear()
 
 
 def _csv(name: str) -> str:

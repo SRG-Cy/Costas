@@ -210,3 +210,30 @@ def test_explain_uses_the_irp_fee_from_the_catalogue(monkeypatch):
     monkeypatch.setattr(ai, "_complete", fake)
     assert ai.explain(est, "Galway") == "The IRP fee is €450."
     assert '"irp_registration_fee": 450' in prompts[0] and "300" not in prompts[0]
+
+
+# ---------------------------------------------------------------- caching
+def test_repeat_lookups_do_not_reread_the_csv_files(monkeypatch):
+    choices = Choices(county="Cork", housing="own_place", in_city=True, needs_irp=True, include_gym=True)
+    first = costs.estimate(choices)
+    calls = []
+    real_connect = costs.duckdb.connect
+    monkeypatch.setattr(costs.duckdb, "connect", lambda *a, **k: calls.append(1) or real_connect(*a, **k))
+    again = costs.estimate(choices)
+    assert calls == [] and again.total == first.total and again.arrival_total == first.arrival_total
+
+
+def test_cached_results_cannot_be_changed_by_callers():
+    rows = costs._rows(f"SELECT county FROM {costs._csv('county_market.csv')}")
+    with pytest.raises((TypeError, AttributeError)):
+        rows.append(("Atlantis",))
+    assert "Atlantis" not in costs.counties()
+
+
+def test_clear_cache_forces_a_fresh_read(monkeypatch):
+    costs.counties()
+    costs.clear_cache()
+    calls = []
+    real_connect = costs.duckdb.connect
+    monkeypatch.setattr(costs.duckdb, "connect", lambda *a, **k: calls.append(1) or real_connect(*a, **k))
+    assert len(costs.counties()) == 26 and calls == [1]
