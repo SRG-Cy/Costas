@@ -98,6 +98,7 @@ The app reads each reference file once and keeps the results in memory, so resta
 | `costs.py` | All calculations, no UI, covered by `test_costs.py` |
 | `ai.py` | Optional AI helpers with validation of everything the model returns |
 | `reference/*.csv` | Sourced data: rents, room rents, county-to-market map, cost catalogue, everyday-costs basket |
+| `explore.py` | Downloads the large RTB/CSO rent table (only needed to refresh the data) |
 | `export_reference.py` | Builds the small rent file from the large CSO download |
 | `DECISIONS.md` | Why it is built this way |
 

@@ -14,7 +14,7 @@ Short notes on why the project is built the way it is. Each one is a talking poi
 - **Whole homes and rooms come from different sources.** The RTB index covers whole dwellings. Room rents come from the Daft.ie Q1 2026 rental report (page 15 by region, page 32 by city). Every value was checked against the PDF text.
 - **Rooms are by market, not county.** Daft publishes Dublin, four cities, and regions. `county_market.csv` maps each county to its market. Galway rest-of-county is mapped to Connacht-Ulster as an assumption (the report label says "ex-Galway").
 - **MESL is the baseline for everyday costs.** It already includes food, energy, transport and phone, so the itemised catalogue rows (TV licence, electricity, GoMo...) are shown for reference and NOT added on top (double counting). It is a national, urban, single-adult figure.
-- **Every catalogue row has a source, a date and a confidence.** Unsourced numbers are `estimate` with low confidence and are labelled in the app. Missing ones stay `todo`.
+- **Every catalogue row has a source, a date and a confidence.** Unsourced numbers are `estimate` with low confidence and are labelled in the app. Rows that are no longer used (superseded, or a `todo` with no figure) are removed rather than kept.
 - **Listed (asking) rents vs registered rents.** Daft = what a newcomer sees when searching. RTB = registered tenancies. The app labels which is which.
 
 ## Product

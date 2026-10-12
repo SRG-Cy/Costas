@@ -237,3 +237,7 @@ def test_clear_cache_forces_a_fresh_read(monkeypatch):
     real_connect = costs.duckdb.connect
     monkeypatch.setattr(costs.duckdb, "connect", lambda *a, **k: calls.append(1) or real_connect(*a, **k))
     assert len(costs.counties()) == 26 and calls == [1]
+
+
+def test_catalogue_has_no_dead_rows():
+    assert {c["status"] for c in costs.catalogue()} <= {"verified", "estimate"}
