@@ -4,6 +4,7 @@ primaryColor = "#52d3a2"
 backgroundColor = "#07110e"
 secondaryBackgroundColor = "#0c1814"
 textColor = "#e8f0eb"
+linkColor = "#52d3a2"
 font = "sans serif"
 
 [browser]
