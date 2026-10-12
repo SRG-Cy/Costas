@@ -19,10 +19,10 @@ Short notes on why the project is built the way it is. Each one is a talking poi
 
 ## Product
 - **Deterministic numbers, no LLM for prices.** The model never writes a price. (An LLM could later parse free-text answers or explain the result.)
-- **Honest about gaps:** deposits, registration fees, health insurance and families are shown as not included, not guessed.
+- **Honest about gaps:** anything without a figure (visa and permit fees, setup items, gas and heating, families) is shown as not included, not guessed. Deposit, first month, IRP fee and health insurance are now included.
 
 ## Open items
-- Deposit and arrival costs, public transport fares, health insurance: need sourced figures.
+- Public transport fares and health insurance: replace the estimates with official sourced figures. IRP fee: confirm on an official irishimmigration.ie page.
 - Roll rents forward with CPI (RTB data ends 2025H2); use the newer Daft Q2 2026 report.
 - Urban vs rural MESL split.
 

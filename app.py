@@ -60,6 +60,12 @@ def counties():
     return costs.counties()
 
 
+@st.cache_data
+def example_total() -> float:
+    """Monthly total for the welcome-page example (student, room in Galway City), to the nearest 50."""
+    return round(costs.estimate(Choices(county="Galway", housing="room", in_city=True)).total / 50) * 50
+
+
 
 
 STEPS = ["Welcome", "Where", "Home", "About you", "Result"]
@@ -96,7 +102,7 @@ if step == 0:
         '<p>Answer three quick questions. Get a monthly estimate and the cash you need on arrival, '
         'built from official data. Every number comes with its source.</p>'
         '<div class="sample"><div class="k">Example · a student in a room in Galway City</div>'
-        '<div class="big">about €1,200 a month</div>'
+        f'<div class="big">about {eur(example_total())} a month</div>'
         '<div class="k">plus one-off move-in cash. Yours depends on your answers.</div></div></div>',
         unsafe_allow_html=True)
     st.button("Start", type="primary", on_click=go, args=(1,))
@@ -315,8 +321,8 @@ else:
         "(https://budgeting.ie/wp-content/uploads/2024/08/WA_Core_MESL_U_2024.pdf), shares applied to the 2025 total.\n"
         f"- **Deposit and first month:** [RTB rules]({cat['arrival_deposit']['source_url']}): at most one month's rent each.\n"
         + (f"- **IRP registration fee (€300):** [DkIT]({cat['arrival_registration']['source_url']}). A university page, so check the official fee before you rely on it.\n" if est.irp else "")
-        + "- **Not included yet:** visa and permit fees, setup items (SIM, bedding), health insurance, "
-        "childcare, and anything for couples or families.")
+        + "- **Not included yet:** visa and permit fees, setup items (SIM, bedding), childcare, "
+        "and anything for couples or families.")
     ref = [c for c in cat.values() if c["status"] == "verified" and c["source_url"]
            and c["item_id"] not in ("mesl_single_urban", "arrival_deposit")]
     if ref:
