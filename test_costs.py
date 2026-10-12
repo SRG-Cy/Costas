@@ -241,3 +241,41 @@ def test_clear_cache_forces_a_fresh_read(monkeypatch):
 
 def test_catalogue_has_no_dead_rows():
     assert {c["status"] for c in costs.catalogue()} <= {"verified", "estimate"}
+
+
+# ---------------------------------------------------------------- data export checks
+import duckdb
+
+import export_reference
+
+
+def _rent_area(rows):
+    con = duckdb.connect()
+    con.execute("CREATE TABLE rent_area(half_year VARCHAR, area VARCHAR, bedrooms VARCHAR, rent_eur DOUBLE)")
+    if rows:
+        con.executemany("INSERT INTO rent_area VALUES (?, ?, ?, ?)", rows)
+    return con
+
+
+def _every_area():
+    return [("2025H2", a, "One bed", 1000.0) for a in [*export_reference.COUNTIES, *export_reference.CITIES]]
+
+
+def test_export_check_accepts_good_data():
+    export_reference.check_rent_area(_rent_area(_every_area()))
+
+
+def test_export_check_rejects_an_empty_table():
+    with pytest.raises(SystemExit, match="No published rents"):
+        export_reference.check_rent_area(_rent_area([]))
+
+
+def test_export_check_rejects_duplicate_rows():
+    with pytest.raises(SystemExit, match="1 duplicate"):
+        export_reference.check_rent_area(_rent_area(_every_area() + [("2025H2", "Mayo", "One bed", 900.0)]))
+
+
+def test_export_check_rejects_a_missing_area():
+    rows = [r for r in _every_area() if r[1] != "Galway City"]
+    with pytest.raises(SystemExit, match="Galway City"):
+        export_reference.check_rent_area(_rent_area(rows))
