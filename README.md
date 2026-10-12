@@ -6,7 +6,7 @@ Every number links to its source.
 
 **Live app: https://costas.streamlit.app/**
 
-Built solo for Hacktoberfest 2026.
+Built solo.
 
 ## What it does
 

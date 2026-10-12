@@ -8,7 +8,7 @@ URL = (
     f"PxStat.Data.Cube_API.ReadDataset/{TABLE}/CSV/1.0/en"
 )
 PATH = f"data/raw/{TABLE}.csv"
-headers = {"User-Agent": "Mozilla/5.0 (costas-hacktoberfest)"}
+headers = {"User-Agent": "Mozilla/5.0 (costas)"}
 
 os.makedirs("data/raw", exist_ok=True)
 
