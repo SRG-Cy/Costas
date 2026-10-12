@@ -18,7 +18,6 @@ CSS = """
 header[data-testid="stHeader"] {background: transparent;}
 .stButton > button, .stDownloadButton > button {border-radius: 999px; padding: .55rem 1.5rem; font-weight: 600;}
 .stButton > button {white-space: nowrap;}
-[data-testid="stColumn"] .stButton > button {width: 100%;}
 .stButton > button[kind="primary"] {color: #03110b;}
 .hero h1 {font-size: clamp(2.6rem, 7vw, 4.4rem); line-height: 1.02; letter-spacing: -0.03em; margin: .4rem 0 1rem;}
 .hero .accent {background: linear-gradient(90deg, #52d3a2, #cfe9a8); -webkit-background-clip: text; color: transparent;}
@@ -84,11 +83,11 @@ def go(step: int):
 
 
 def nav(back: int | None, next_: int | None, next_label: str = "Next"):
-    cols = st.columns([1, 2, 3])
-    if back is not None:
-        cols[0].button("Back", on_click=go, args=(back,), key=f"back{back}")
-    if next_ is not None:
-        cols[1].button(next_label, type="primary", on_click=go, args=(next_,), key=f"next{next_}")
+    with st.container(horizontal=True, gap="small"):  # side by side, also on a phone
+        if back is not None:
+            st.button("Back", on_click=go, args=(back,), key=f"back{back}")
+        if next_ is not None:
+            st.button(next_label, type="primary", on_click=go, args=(next_,), key=f"next{next_}")
 
 
 step = st.session_state.step
@@ -201,9 +200,9 @@ elif step == 5:
         f'<div class="card" style="display:flex;justify-content:space-between;gap:1rem;padding:.8rem 1.2rem;">'
         f'<span class="k">{k}</span><span style="font-weight:600;text-align:right;">{v}</span></div>'
         for k, v in rows) + '</div>', unsafe_allow_html=True)
-    cols = st.columns([2, 2, 2])
-    cols[0].button("Confirm and see my estimate", type="primary", on_click=go, args=(4,), key="confirm")
-    cols[1].button("Change something", on_click=go, args=(1,), key="change")
+    with st.container(horizontal=True, gap="small"):
+        st.button("Confirm and see my estimate", type="primary", on_click=go, args=(4,), key="confirm")
+        st.button("Change something", on_click=go, args=(1,), key="change")
 
 else:
     county, in_city, housing = A["county"], A["in_city"], A["housing"]
